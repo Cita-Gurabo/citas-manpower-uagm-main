@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acceso Administrativo - UAGM</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #003366 0%, #c8102e 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .login-card {
+            width: 100%;
+            max-width: 420px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 12px 35px rgba(0,0,0,0.18);
+            padding: 32px 28px;
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .login-header img {
+            height: 70px;
+            margin-bottom: 15px;
+        }
+
+        .login-header h1 {
+            color: #003366;
+            font-size: 26px;
+            margin-bottom: 8px;
+        }
+
+        .login-header p {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 13px 14px;
+            border: 2px solid #d9dee7;
+            border-radius: 10px;
+            font-size: 14px;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #c8102e;
+        }
+
+        .login-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #c8102e 0%, #8b0b1f 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 14px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .login-btn:hover {
+            opacity: 0.95;
+        }
+
+        .error-message {
+            display: none;
+            margin-top: 15px;
+            background: #fee2e2;
+            color: #991b1b;
+            padding: 12px 14px;
+            border-radius: 10px;
+            font-size: 14px;
+        }
+
+        .footer-note {
+            margin-top: 18px;
+            text-align: center;
+            font-size: 12px;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-card">
+        <div class="login-header">
+            <img src="Logo UAGM.png" alt="Logo UAGM">
+            <h1>Acceso Administrativo</h1>
+            <p>Panel interno de citas<br>Oficina de Carreras y Colocaciones - UAGM Gurabo</p>
+        </div>
+
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="username">Usuario</label>
+                <input type="text" id="username" placeholder="Ingrese su usuario" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Contraseña</label>
+                <input type="password" id="password" placeholder="Ingrese su contraseña" required>
+            </div>
+
+            <button type="submit" class="login-btn">
+                <i class="fas fa-lock"></i> Ingresar al Panel
+            </button>
+
+            <div id="errorMessage" class="error-message">
+                Usuario o contraseña incorrectos.
+            </div>
+        </form>
+
+        <div class="footer-note">
+            Acceso restringido al personal autorizado.
+        </div>
+    </div>
+
+    <script>
+        const ADMIN_USER = "admin";
+        const ADMIN_PASSWORD = "UAGM2026";
+
+        document.getElementById("loginForm").addEventListener("submit", function(e) {
+            e.preventDefault();
+
+            const username = document.getElementById("username").value.trim();
+            const password = document.getElementById("password").value.trim();
+            const errorMessage = document.getElementById("errorMessage");
+
+            if (username === ADMIN_USER && password === ADMIN_PASSWORD) {
+                localStorage.setItem("adminLoggedIn", "true");
+                window.location.href = "admin-citas.html";
+            } else {
+                errorMessage.style.display = "block";
+            }
+        });
+    </script>
+
+</body>
+</html>
