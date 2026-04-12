@@ -446,7 +446,6 @@ const ADMIN_EMAILS = ["cita.gurabo@gmail.com"];
 let authChecked = false;
 
 auth.onAuthStateChanged(user => {
-
     if (!user) {
         if (!authChecked) {
             authChecked = true;
@@ -455,20 +454,31 @@ auth.onAuthStateChanged(user => {
         return;
     }
 
-    console.log("Admin autorizado:", user.email);
+    authChecked = true;
 
+    if (!ADMIN_EMAILS.includes(user.email)) {
+        firebase.auth().signOut().then(() => {
+            sessionStorage.setItem("logoutInProgress", "1");
+            window.location.replace("login.html");
+        });
+        return;
+    }
+
+    document.body.style.display = "block";
     cargarCitas();
     inicializarGraficas();
 });
 
 function logout() {
     document.body.style.display = "none";
+    sessionStorage.setItem("logoutInProgress", "1");
 
     firebase.auth().signOut().then(() => {
         window.location.replace("login.html");
     }).catch(error => {
-        alert("Error al cerrar sesión: " + error.message);
+        sessionStorage.removeItem("logoutInProgress");
         document.body.style.display = "block";
+        alert("Error al cerrar sesión: " + error.message);
     });
 }
     console.log("Admin autorizado:", user.email);
