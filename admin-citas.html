@@ -285,7 +285,7 @@
         }
     </style>
 </head>
-<body>
+<body style="display:none;">
 
     <header class="header-bar">
         <div class="logo-left">
@@ -302,28 +302,28 @@
         </div>
     </header>
 
-    <div class="container">
-        <div class="panel-card">
-            <div style="display:flex; justify-content:space-between; align-items:center; gap:15px; flex-wrap:wrap; margin-bottom:20px;">
-                <div class="panel-title" style="margin-bottom:0;">
-                    <i class="fas fa-calendar-alt"></i>
-                    Administración de Citas
-                </div>
+    <div style="display:flex; justify-content:space-between; align-items:center; gap:15px; flex-wrap:wrap; margin-bottom:20px;">
 
-                <div style="display:flex; gap:10px; flex-wrap:wrap;">
-                    <button id="exportCsvBtn" style="
-                        background: linear-gradient(135deg, #c8102e 0%, #8b0b1f 100%);
-                        color: white;
-                        border: none;
-                        border-radius: 10px;
-                        padding: 12px 18px;
-                        font-weight: 700;
-                        cursor: pointer;
-                    ">
+    <h2>Panel Administrativo</h2>
+
+    <button onclick="logout()" style="
+    background: #c8102e;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+">
+    🔒 Cerrar Sesión
+</button>
+
+</div>
+
                         <i class="fas fa-file-csv"></i> Exportar a Excel
                     </button>
 
-                    <button id="logoutBtn" style="
+        
                         background: #003366;
                         color: white;
                         border: none;
@@ -442,23 +442,64 @@
         firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 const auth = firebase.auth();
-
 const ADMIN_EMAILS = ["cita.gurabo@gmail.com"];
+let authChecked = false;
 
 auth.onAuthStateChanged(user => {
     if (!user) {
-        window.location.href = "login.html";
+        if (!authChecked) {
+            authChecked = true;
+            window.location.replace("login.html");
+        }
         return;
     }
 
+    authChecked = true;
+
     if (!ADMIN_EMAILS.includes(user.email)) {
         firebase.auth().signOut().then(() => {
-            alert("No autorizado para acceder al panel.");
-            window.location.href = "login.html";
+            window.location.replace("login.html");
         });
         return;
     }
 
+    document.body.style.display = "block";
+    cargarCitas();
+    inicializarGraficas();
+});
+
+function logout() {
+    document.body.style.display = "none";
+
+    firebase.auth().signOut().then(() => {
+        window.location.replace("login.html");
+    }).catch(error => {
+        alert("Error al cerrar sesión: " + error.message);
+        document.body.style.display = "block";
+    });
+}
+    console.log("Admin autorizado:", user.email);
+
+   auth.onAuthStateChanged(user => {
+    if (!user) {
+        if (!authChecked) {
+            authChecked = true;
+            window.location.replace("login.html");
+        }
+        return;
+    }
+
+    authChecked = true;
+
+    if (!ADMIN_EMAILS.includes(user.email)) {
+        firebase.auth().signOut().then(() => {
+            alert("No autorizado para acceder al panel.");
+            window.location.replace("login.html");
+        });
+        return;
+    }
+
+    document.body.style.display = "block";
     console.log("Admin autorizado:", user.email);
 
     cargarCitas();
@@ -957,9 +998,9 @@ auth.onAuthStateChanged(user => {
     </td>
     <td>${getStatusBadge(appointment.status)}</td>
     <td>
-        <button class="action-btn delete-btn" onclick="deleteAppointment('${appointment.docId}')">
-            Eliminar
-        </button>
+      <button>
+    <i class="fas fa-file-csv"></i> Exportar a Excel
+</button>
     </td>
 `;
                 tbody.appendChild(row);
@@ -1093,11 +1134,13 @@ auth.onAuthStateChanged(user => {
                 alert("Ocurrió un error al eliminar la cita.");
             }
         }
-
-        function logout() {
-            localStorage.removeItem("adminLoggedIn");
-            window.location.href = "login.html";
-        }
+function logout() {
+    firebase.auth().signOut().then(() => {
+        window.location.replace("login.html");
+    }).catch(error => {
+        alert("Error al cerrar sesión: " + error.message);
+    });
+}
 
         document.addEventListener("DOMContentLoaded", function () {
             document.getElementById("searchInput").addEventListener("input", filterAppointments);
@@ -1105,8 +1148,7 @@ auth.onAuthStateChanged(user => {
             document.getElementById("methodFilter").addEventListener("change", filterAppointments);
             document.getElementById("statusFilter").addEventListener("change", filterAppointments);
             document.getElementById("exportCsvBtn").addEventListener("click", exportAppointmentsToCSV);
-            document.getElementById("logoutBtn").addEventListener("click", logout);
-
+        
             loadAppointments();
         });
     </script>
