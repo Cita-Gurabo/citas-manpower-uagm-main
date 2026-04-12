@@ -2,6 +2,7 @@
 <html lang="es">
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -424,9 +425,7 @@
     </div>
 
     <script>
-        if (localStorage.getItem("adminLoggedIn") !== "true") {
-            window.location.href = "login.html";
-        }
+       
 
         Chart.register(ChartDataLabels);
 
@@ -441,7 +440,30 @@
         };
 
         firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
+const db = firebase.firestore();
+const auth = firebase.auth();
+
+const ADMIN_EMAILS = ["cita.gurabo@gmail.com"];
+
+auth.onAuthStateChanged(user => {
+    if (!user) {
+        window.location.href = "login.html";
+        return;
+    }
+
+    if (!ADMIN_EMAILS.includes(user.email)) {
+        firebase.auth().signOut().then(() => {
+            alert("No autorizado para acceder al panel.");
+            window.location.href = "login.html";
+        });
+        return;
+    }
+
+    console.log("Admin autorizado:", user.email);
+
+    cargarCitas();
+    inicializarGraficas();
+});
 
         let appointments = [];
         let methodChart = null;
