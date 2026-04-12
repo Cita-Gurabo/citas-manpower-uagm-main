@@ -446,6 +446,7 @@ const ADMIN_EMAILS = ["cita.gurabo@gmail.com"];
 let authChecked = false;
 
 auth.onAuthStateChanged(user => {
+
     if (!user) {
         if (!authChecked) {
             authChecked = true;
@@ -454,16 +455,8 @@ auth.onAuthStateChanged(user => {
         return;
     }
 
-    authChecked = true;
+    console.log("Admin autorizado:", user.email);
 
-    if (!ADMIN_EMAILS.includes(user.email)) {
-        firebase.auth().signOut().then(() => {
-            window.location.replace("login.html");
-        });
-        return;
-    }
-
-    document.body.style.display = "block";
     cargarCitas();
     inicializarGraficas();
 });
