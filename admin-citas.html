@@ -468,7 +468,6 @@ auth.onAuthStateChanged(user => {
     cargarCitas();
     inicializarGraficas();
 });
-
 function logout() {
     document.body.style.display = "none";
     sessionStorage.setItem("logoutInProgress", "1");
@@ -483,32 +482,7 @@ function logout() {
 }
     console.log("Admin autorizado:", user.email);
 
-   auth.onAuthStateChanged(user => {
-    if (!user) {
-        if (!authChecked) {
-            authChecked = true;
-            window.location.replace("login.html");
-        }
-        return;
-    }
-
-    authChecked = true;
-
-    if (!ADMIN_EMAILS.includes(user.email)) {
-        firebase.auth().signOut().then(() => {
-            alert("No autorizado para acceder al panel.");
-            window.location.replace("login.html");
-        });
-        return;
-    }
-
-    document.body.style.display = "block";
-    console.log("Admin autorizado:", user.email);
-
-    cargarCitas();
-    inicializarGraficas();
-});
-
+   
         let appointments = [];
         let methodChart = null;
         let serviceChart = null;

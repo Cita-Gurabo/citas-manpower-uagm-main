@@ -102,11 +102,12 @@
 const ADMIN_EMAILS = ["cita.gurabo@gmail.com"];
 
 auth.onAuthStateChanged(user => {
-    if (user && ADMIN_EMAILS.includes(user.email)) {
-        window.location.replace("admin-citas.html");
-    }
-});
+    const logoutInProgress = sessionStorage.getItem("logoutInProgress");
 
+    if (logoutInProgress === "1") {
+        sessionStorage.removeItem("logoutInProgress");
+        return;
+    
   function login(event) {
     if (event) event.preventDefault();
 
@@ -115,6 +116,7 @@ auth.onAuthStateChanged(user => {
     const errorMsg = document.getElementById("errorMsg");
 
     errorMsg.textContent = "";
+    sessionStorage.removeItem("logoutInProgress");
 
     auth.signInWithEmailAndPassword(email, password)
         .then((userCredential) => {
