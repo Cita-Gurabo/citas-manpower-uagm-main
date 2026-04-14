@@ -97,18 +97,33 @@
   measurementId: "G-7HJWCRZMXX"
 };
 
-  firebase.initializeApp(firebaseConfig);
-  const auth = firebase.auth();
+ firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
 const ADMIN_EMAILS = ["cita.gurabo@gmail.com"];
 
-auth.onAuthStateChanged(user => {
-    const logoutInProgress = sessionStorage.getItem("logoutInProgress");
+let isRedirecting = false;
 
-    if (logoutInProgress === "1") {
+auth.onAuthStateChanged(user => {
+    const logoutInProgress = sessionStorage.getItem("logoutInProgress") === "1";
+
+    if (logoutInProgress) {
         sessionStorage.removeItem("logoutInProgress");
+        document.body.style.display = "block";
         return;
-    
-  function login(event) {
+    }
+
+    if (user && ADMIN_EMAILS.includes(user.email)) {
+        if (!isRedirecting) {
+            isRedirecting = true;
+            window.location.replace("admin-citas.html");
+        }
+        return;
+    }
+
+    document.body.style.display = "block";
+});
+
+function login(event) {
     if (event) event.preventDefault();
 
     const email = document.getElementById("email").value.trim();
@@ -128,10 +143,14 @@ auth.onAuthStateChanged(user => {
                 });
             }
 
-            window.location.replace("admin-citas.html");
+            if (!isRedirecting) {
+                isRedirecting = true;
+                window.location.replace("admin-citas.html");
+            }
         })
         .catch(error => {
             errorMsg.textContent = "Error: " + error.message;
+            document.body.style.display = "block";
         });
 }
 </script>

@@ -443,12 +443,15 @@
 const db = firebase.firestore();
 const auth = firebase.auth();
 const ADMIN_EMAILS = ["cita.gurabo@gmail.com"];
+
 let authChecked = false;
+let isRedirecting = false;
 
 auth.onAuthStateChanged(user => {
     if (!user) {
-        if (!authChecked) {
+        if (!authChecked && !isRedirecting) {
             authChecked = true;
+            isRedirecting = true;
             window.location.replace("login.html");
         }
         return;
@@ -457,10 +460,13 @@ auth.onAuthStateChanged(user => {
     authChecked = true;
 
     if (!ADMIN_EMAILS.includes(user.email)) {
-        firebase.auth().signOut().then(() => {
+        if (!isRedirecting) {
+            isRedirecting = true;
             sessionStorage.setItem("logoutInProgress", "1");
-            window.location.replace("login.html");
-        });
+            firebase.auth().signOut().then(() => {
+                window.location.replace("login.html");
+            });
+        }
         return;
     }
 
@@ -468,14 +474,17 @@ auth.onAuthStateChanged(user => {
     cargarCitas();
     inicializarGraficas();
 });
+
 function logout() {
     document.body.style.display = "none";
+    isRedirecting = true;
     sessionStorage.setItem("logoutInProgress", "1");
 
     firebase.auth().signOut().then(() => {
         window.location.replace("login.html");
     }).catch(error => {
         sessionStorage.removeItem("logoutInProgress");
+        isRedirecting = false;
         document.body.style.display = "block";
         alert("Error al cerrar sesión: " + error.message);
     });
