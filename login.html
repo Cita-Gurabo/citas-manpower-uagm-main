@@ -113,12 +113,12 @@ auth.onAuthStateChanged(user => {
     }
 
     if (user && ADMIN_EMAILS.includes(user.email)) {
-        if (!isRedirecting) {
-            isRedirecting = true;
-            window.location.replace("admin-citas.html");
-        }
-        return;
+    if (!isRedirecting && !logoutInProgress) {
+        isRedirecting = true;
+        window.location.replace("admin-citas.html");
     }
+    return;
+}
 
     document.body.style.display = "block";
 });
