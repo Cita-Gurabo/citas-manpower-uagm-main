@@ -143,10 +143,7 @@ function login(event) {
                 });
             }
 
-            if (!isRedirecting) {
-                isRedirecting = true;
-                window.location.replace("admin-citas.html");
-            }
+            window.location.replace("admin-citas.html");
         })
         .catch(error => {
             errorMsg.textContent = "Error: " + error.message;
