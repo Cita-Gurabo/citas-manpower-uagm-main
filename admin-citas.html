@@ -452,20 +452,16 @@ let participantTypeChart = null;
 
 auth.onAuthStateChanged(user => {
     if (!user) {
-        if (!authChecked && !isRedirecting) {
-            authChecked = true;
+        if (!isRedirecting) {
             isRedirecting = true;
             window.location.replace("login.html");
         }
         return;
     }
 
-    authChecked = true;
-
     if (!ADMIN_EMAILS.includes((user.email || "").toLowerCase())) {
         if (!isRedirecting) {
             isRedirecting = true;
-            sessionStorage.setItem("logoutInProgress", "1");
             firebase.auth().signOut().then(() => {
                 window.location.replace("login.html");
             });
@@ -479,42 +475,14 @@ auth.onAuthStateChanged(user => {
 
 function logout() {
     document.body.style.display = "none";
-    isRedirecting = true;
-    sessionStorage.setItem("logoutInProgress", "1");
 
     firebase.auth().signOut().then(() => {
         window.location.replace("login.html");
     }).catch(error => {
-        sessionStorage.removeItem("logoutInProgress");
-        isRedirecting = false;
         document.body.style.display = "block";
         alert("Error al cerrar sesión: " + error.message);
     });
 }
-     
-               function loadAppointments() {
-            db.collection("appointments")
-                .orderBy("createdAt", "desc")
-                .onSnapshot((snapshot) => {
-                    appointments = [];
-
-                    snapshot.forEach((doc) => {
-                        appointments.push({
-                            docId: doc.id,
-                            ...doc.data()
-                        });
-                    });
-
-                    const filtered = getFilteredAppointments();
-                    renderAppointments(filtered);
-                    updateStats(filtered);
-                    renderCharts(filtered);
-
-                }, (error) => {
-                    console.error("Error cargando citas:", error);
-                });
-        }
-
         function formatDate(dateString) {
             if (!dateString) return "Lista de espera";
 
