@@ -437,13 +437,11 @@
             measurementId: "G-7HJWCRZMXX"
         };
 
-        firebase.initializeApp(firebaseConfig);
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 const auth = firebase.auth();
 const ADMIN_EMAILS = ["cita.gurabo@gmail.com"];
 
-let authChecked = false;
 let isRedirecting = false;
 let appointments = [];
 let methodChart = null;

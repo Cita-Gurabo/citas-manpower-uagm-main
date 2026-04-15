@@ -70,7 +70,7 @@
     }
   </style>
 </head>
-<body style="display:none;">
+<body>
     <div class="login-box">
     <h2>Panel Administrativo Recinto de Gurabo</h2>
     <p>Inicia sesión para acceder a las citas</p>
@@ -99,12 +99,7 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
-const ADMIN_EMAILS = ["cita.gurabo@gmail.com"].map(e => e.toLowerCase());
-
-auth.onAuthStateChanged(() => {
-    sessionStorage.removeItem("logoutInProgress");
-    document.body.style.display = "block";
-});
+const ADMIN_EMAILS = ["cita.gurabo@gmail.com"];
 
 function login(event) {
     if (event) event.preventDefault();
@@ -114,14 +109,12 @@ function login(event) {
     const errorMsg = document.getElementById("errorMsg");
 
     errorMsg.textContent = "";
-    sessionStorage.removeItem("logoutInProgress");
 
     auth.signInWithEmailAndPassword(email, password)
         .then((userCredential) => {
             const user = userCredential.user;
-            const userEmail = (user.email || "").toLowerCase();
 
-            if (!ADMIN_EMAILS.includes(userEmail)) {
+            if (!ADMIN_EMAILS.includes(user.email)) {
                 return auth.signOut().then(() => {
                     throw new Error("No autorizado para acceder al panel.");
                 });
@@ -131,7 +124,6 @@ function login(event) {
         })
         .catch(error => {
             errorMsg.textContent = "Error: " + error.message;
-            document.body.style.display = "block";
         });
 }
 </script>
