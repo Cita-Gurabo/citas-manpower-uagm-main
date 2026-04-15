@@ -302,40 +302,38 @@
         </div>
     </header>
 
-    <div style="display:flex; justify-content:space-between; align-items:center; gap:15px; flex-wrap:wrap; margin-bottom:20px;">
+    <div class="container">
+    <div class="panel-card">
 
-    <h2>Panel Administrativo</h2>
+        <div style="display:flex; justify-content:space-between; align-items:center; gap:15px; flex-wrap:wrap; margin-bottom:20px;">
+            <h2>Panel Administrativo</h2>
 
-    <button onclick="logout()" style="
-    background: #c8102e;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: bold;
-">
-    🔒 Cerrar Sesión
-</button>
+            <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                <button id="exportCsvBtn" style="
+                    background: #003366;
+                    color: white;
+                    border: none;
+                    padding: 10px 15px;
+                    border-radius: 6px;
+                    cursor: pointer;
+                    font-weight: bold;
+                ">
+                    <i class="fas fa-file-csv"></i> Exportar a Excel
+                </button>
 
-</div>
-
-                        <i class="fas fa-file-csv"></i> Exportar a Excel
-                    </button>
-
-        
-                        background: #003366;
-                        color: white;
-                        border: none;
-                        border-radius: 10px;
-                        padding: 12px 18px;
-                        font-weight: 700;
-                        cursor: pointer;
-                    ">
-                        <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
-                    </button>
-                </div>
+                <button onclick="logout()" style="
+                    background: #c8102e;
+                    color: white;
+                    border: none;
+                    padding: 10px 15px;
+                    border-radius: 6px;
+                    cursor: pointer;
+                    font-weight: bold;
+                ">
+                    🔒 Cerrar Sesión
+                </button>
             </div>
+        </div>
 
             <div class="stats-cards">
                 <div class="stat-card">
@@ -440,12 +438,19 @@
         };
 
         firebase.initializeApp(firebaseConfig);
+firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 const auth = firebase.auth();
 const ADMIN_EMAILS = ["cita.gurabo@gmail.com"];
 
 let authChecked = false;
 let isRedirecting = false;
+let appointments = [];
+let methodChart = null;
+let serviceChart = null;
+let dateChart = null;
+let campusChart = null;
+let participantTypeChart = null;
 
 auth.onAuthStateChanged(user => {
     if (!user) {
@@ -459,7 +464,7 @@ auth.onAuthStateChanged(user => {
 
     authChecked = true;
 
-    if (!ADMIN_EMAILS.includes(user.email)) {
+    if (!ADMIN_EMAILS.includes((user.email || "").toLowerCase())) {
         if (!isRedirecting) {
             isRedirecting = true;
             sessionStorage.setItem("logoutInProgress", "1");
@@ -471,8 +476,7 @@ auth.onAuthStateChanged(user => {
     }
 
     document.body.style.display = "block";
-    cargarCitas();
-    inicializarGraficas();
+    loadAppointments();
 });
 
 function logout() {
@@ -489,17 +493,8 @@ function logout() {
         alert("Error al cerrar sesión: " + error.message);
     });
 }
-    console.log("Admin autorizado:", user.email);
-
-   
-        let appointments = [];
-        let methodChart = null;
-        let serviceChart = null;
-        let dateChart = null;
-        let campusChart = null;
-        let participantTypeChart = null;
-
-        function loadAppointments() {
+     
+               function loadAppointments() {
             db.collection("appointments")
                 .orderBy("createdAt", "desc")
                 .onSnapshot((snapshot) => {
@@ -983,11 +978,11 @@ function logout() {
         }
     </td>
     <td>${getStatusBadge(appointment.status)}</td>
-    <td>
-      <button>
-    <i class="fas fa-file-csv"></i> Exportar a Excel
-</button>
-    </td>
+   <td>
+    <button class="action-btn delete-btn" onclick="deleteAppointment('${appointment.docId}')">
+        Eliminar
+    </button>
+</td>
 `;
                 tbody.appendChild(row);
             });
@@ -1120,24 +1115,15 @@ function logout() {
                 alert("Ocurrió un error al eliminar la cita.");
             }
         }
-function logout() {
-    firebase.auth().signOut().then(() => {
-        window.location.replace("login.html");
-    }).catch(error => {
-        alert("Error al cerrar sesión: " + error.message);
-    });
-}
 
         document.addEventListener("DOMContentLoaded", function () {
-            document.getElementById("searchInput").addEventListener("input", filterAppointments);
-            document.getElementById("dateFilter").addEventListener("change", filterAppointments);
-            document.getElementById("methodFilter").addEventListener("change", filterAppointments);
-            document.getElementById("statusFilter").addEventListener("change", filterAppointments);
-            document.getElementById("exportCsvBtn").addEventListener("click", exportAppointmentsToCSV);
-        
-            loadAppointments();
-        });
-    </script>
+    document.getElementById("searchInput").addEventListener("input", filterAppointments);
+    document.getElementById("dateFilter").addEventListener("change", filterAppointments);
+    document.getElementById("methodFilter").addEventListener("change", filterAppointments);
+    document.getElementById("statusFilter").addEventListener("change", filterAppointments);
+    document.getElementById("exportCsvBtn").addEventListener("click", exportAppointmentsToCSV);
+});
+        </script>
 
 </body>
 </html>
