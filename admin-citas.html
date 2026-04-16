@@ -428,14 +428,15 @@
         Chart.register(ChartDataLabels);
 
         const firebaseConfig = {
-            apiKey: "AIzaSyAHEyhKMPyoYyGAK4evC6T8KknS06u23f8",
-            authDomain: "sistema-cita-manpowergroup.firebaseapp.com",
-            projectId: "sistema-cita-manpowergroup",
-            storageBucket: "sistema-cita-manpowergroup.firebasestorage.app",
-            messagingSenderId: "284482299414",
-            appId: "1:284482299414:web:552a4ba8daac946abb7737",
-            measurementId: "G-7HJWCRZMXX"
-        };
+  apiKey: "AIzaSyAHEyhKMPyoYyGAK4evC6T8KknS06u23f8",
+  authDomain: "sistema-cita-manpowergroup.firebaseapp.com",
+  databaseURL: "https://sistema-cita-manpowergroup-default-rtdb.firebaseio.com",
+  projectId: "sistema-cita-manpowergroup",
+  storageBucket: "sistema-cita-manpowergroup.firebasestorage.app",
+  messagingSenderId: "284482299414",
+  appId: "1:284482299414:web:d4f894073d4bed6bb7737",
+  measurementId: "G-TT6MB6Z0Q1"
+};
 
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
