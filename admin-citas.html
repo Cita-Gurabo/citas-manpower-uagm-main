@@ -1074,7 +1074,27 @@ const matchesStatus = !status || itemStatus === status;
 
             URL.revokeObjectURL(url);
         }
+function loadAppointments() {
+    alert("Conectando con Firestore...");
 
+    db.collection("appointments").onSnapshot(
+        (snapshot) => {
+            alert("Citas encontradas: " + snapshot.size);
+
+            appointments = snapshot.docs.map(doc => ({
+                docId: doc.id,
+                ...doc.data()
+            }));
+
+            renderAppointments(appointments);
+            updateStats(appointments);
+            renderCharts(appointments);
+        },
+        (error) => {
+            alert("Error leyendo Firestore: " + error.message);
+        }
+    );
+}
         async function deleteAppointment(docId) {
             const confirmDelete = confirm("¿Está seguro de que desea eliminar esta cita? Esta acción no se puede deshacer.");
 
@@ -1089,7 +1109,10 @@ const matchesStatus = !status || itemStatus === status;
             }
         }
 
-        document.addEventListener("DOMContentLoaded", function () {
+   document.addEventListener("DOMContentLoaded", function () {
+    alert("PRUEBA NUEVA 123");
+    loadAppointments();
+
     document.getElementById("searchInput").addEventListener("input", filterAppointments);
     document.getElementById("dateFilter").addEventListener("change", filterAppointments);
     document.getElementById("methodFilter").addEventListener("change", filterAppointments);
