@@ -1069,23 +1069,24 @@ function logout() {
             URL.revokeObjectURL(url);
         }
 async function loadAppointments() {
+    alert("Intentando cargar citas desde Firebase...");
+
     try {
         const snapshot = await db.collection("appointments").get();
+
+        alert("Citas encontradas en Firestore: " + snapshot.size);
 
         appointments = snapshot.docs.map(doc => ({
             docId: doc.id,
             ...doc.data()
         }));
 
-        console.log("Citas cargadas:", appointments);
-
         renderAppointments(appointments);
         updateStats(appointments);
         renderCharts(appointments);
 
     } catch (error) {
-        console.error("Error cargando citas:", error);
-        alert("Ocurrió un error al cargar las citas. Verifique la consola.");
+        alert("Error cargando citas: " + error.message);
     }
 }
         async function deleteAppointment(docId) {
