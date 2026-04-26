@@ -1068,26 +1068,26 @@ function logout() {
 
             URL.revokeObjectURL(url);
         }
-async function loadAppointments() {
-    alert("Intentando cargar citas desde Firebase...");
+function loadAppointments() {
+    alert("Conectando con Firestore...");
 
-    try {
-        const snapshot = await db.collection("appointments").get();
+    db.collection("appointments").onSnapshot(
+        (snapshot) => {
+            alert("Citas encontradas: " + snapshot.size);
 
-        alert("Citas encontradas en Firestore: " + snapshot.size);
+            appointments = snapshot.docs.map(doc => ({
+                docId: doc.id,
+                ...doc.data()
+            }));
 
-        appointments = snapshot.docs.map(doc => ({
-            docId: doc.id,
-            ...doc.data()
-        }));
-
-        renderAppointments(appointments);
-        updateStats(appointments);
-        renderCharts(appointments);
-
-    } catch (error) {
-        alert("Error cargando citas: " + error.message);
-    }
+            renderAppointments(appointments);
+            updateStats(appointments);
+            renderCharts(appointments);
+        },
+        (error) => {
+            alert("Error leyendo Firestore: " + error.message);
+        }
+    );
 }
         async function deleteAppointment(docId) {
             const confirmDelete = confirm("¿Está seguro de que desea eliminar esta cita? Esta acción no se puede deshacer.");
