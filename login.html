@@ -99,7 +99,7 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
-const ADMIN_EMAILS = ["cita.gurabo@gmail.com"];
+const ADMIN_EMAILS = ["cita.gurabo@gmail.com".toLowerCase().trim()];
 
 function login(event) {
     if (event) event.preventDefault();
@@ -114,7 +114,7 @@ function login(event) {
         .then((userCredential) => {
             const user = userCredential.user;
 
-            if (!ADMIN_EMAILS.includes(user.email)) {
+           if (!ADMIN_EMAILS.includes((user.email || "").toLowerCase().trim())) {
                 return auth.signOut().then(() => {
                     throw new Error("No autorizado para acceder al panel.");
                 });
