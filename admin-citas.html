@@ -1103,6 +1103,9 @@ async function loadAppointments() {
         }
 
         document.addEventListener("DOMContentLoaded", function () {
+    alert("Página cargó");
+    loadAppointments();
+
     document.getElementById("searchInput").addEventListener("input", filterAppointments);
     document.getElementById("dateFilter").addEventListener("change", filterAppointments);
     document.getElementById("methodFilter").addEventListener("change", filterAppointments);
