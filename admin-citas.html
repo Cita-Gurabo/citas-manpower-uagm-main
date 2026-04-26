@@ -968,7 +968,8 @@ function logout() {
                 const matchesSearch = fullName.includes(search) || email.includes(search);
                 const matchesDate = !date || item.appointmentDate === date;
                 const matchesMethod = !method || item.serviceMethod === method;
-                const matchesStatus = !status || item.status === status;
+               const itemStatus = item.isWaitlist ? "waitlist" : "scheduled";
+const matchesStatus = !status || itemStatus === status;
 
                 return matchesSearch && matchesDate && matchesMethod && matchesStatus;
             });
