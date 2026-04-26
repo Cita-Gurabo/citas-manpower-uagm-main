@@ -1068,7 +1068,26 @@ function logout() {
 
             URL.revokeObjectURL(url);
         }
+async function loadAppointments() {
+    try {
+        const snapshot = await db.collection("appointments")
+            .orderBy("createdAt", "desc")
+            .get();
 
+        appointments = snapshot.docs.map(doc => ({
+            docId: doc.id,
+            ...doc.data()
+        }));
+
+        renderAppointments(appointments);
+        updateStats(appointments);
+        renderCharts(appointments);
+
+    } catch (error) {
+        console.error("Error cargando citas:", error);
+        alert("Ocurrió un error al cargar las citas. Verifique la consola.");
+    }
+}
         async function deleteAppointment(docId) {
             const confirmDelete = confirm("¿Está seguro de que desea eliminar esta cita? Esta acción no se puede deshacer.");
 
