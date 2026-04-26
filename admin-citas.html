@@ -428,7 +428,9 @@ window.onerror = function(message, source, lineno, colno, error) {
 };
        
 
-        // Chart.register(ChartDataLabels);
+     if (typeof ChartDataLabels !== "undefined") {
+    Chart.register(ChartDataLabels);
+}
 
         const firebaseConfig = {
   apiKey: "AIzaSyAHEyhKMPyoYyGAK4evC6T8KknS06u23f8",
