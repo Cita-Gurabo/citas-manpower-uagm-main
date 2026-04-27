@@ -1109,15 +1109,14 @@ function loadAppointments() {
         }
 
    document.addEventListener("DOMContentLoaded", function () {
-    alert("Página cargó");
-    loadAppointments();
-
     document.getElementById("searchInput").addEventListener("input", filterAppointments);
     document.getElementById("dateFilter").addEventListener("change", filterAppointments);
     document.getElementById("methodFilter").addEventListener("change", filterAppointments);
     document.getElementById("statusFilter").addEventListener("change", filterAppointments);
     document.getElementById("exportCsvBtn").addEventListener("click", exportAppointmentsToCSV);
 });
+
+setTimeout(loadAppointments, 1000);
 </script>
 
 </body>
