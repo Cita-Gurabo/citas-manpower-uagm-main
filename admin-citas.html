@@ -1073,25 +1073,26 @@ const matchesStatus = !status || itemStatus === status;
             URL.revokeObjectURL(url);
         }
 function loadAppointments() {
-    alert("Conectando con Firestore...");
+    document.getElementById("totalAppointments").textContent = "Cargando...";
 
-    db.collection("appointments").onSnapshot(
-        (snapshot) => {
-            alert("Citas encontradas: " + snapshot.size);
-
+    db.collection("appointments").get()
+        .then((snapshot) => {
             appointments = snapshot.docs.map(doc => ({
                 docId: doc.id,
                 ...doc.data()
             }));
 
+            document.getElementById("totalAppointments").textContent = appointments.length;
+
             renderAppointments(appointments);
             updateStats(appointments);
-            renderCharts(appointments);
-        },
-        (error) => {
-            alert("Error leyendo Firestore: " + error.message);
-        }
-    );
+        })
+        .catch((error) => {
+            document.getElementById("totalAppointments").textContent = "ERROR";
+            document.getElementById("emptyMessage").style.display = "block";
+            document.getElementById("emptyMessage").innerHTML =
+                "Error leyendo Firebase: " + error.message;
+        });
 }
         async function deleteAppointment(docId) {
             const confirmDelete = confirm("¿Está seguro de que desea eliminar esta cita? Esta acción no se puede deshacer.");
